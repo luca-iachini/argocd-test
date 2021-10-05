@@ -6,12 +6,17 @@ import (
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func hello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "App2 is running")
 }
 
+func health(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ok")
+}
+
 func main() {
-	http.HandleFunc("/", handler)
-	log.Printf("App2 listening 9081")
-	log.Fatal(http.ListenAndServe(":9081", nil))
+	http.HandleFunc("/", hello)
+	http.HandleFunc("/healthz", health)
+	log.Printf("App2 listening 8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
