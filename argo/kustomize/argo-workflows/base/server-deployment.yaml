@@ -7,4 +7,13 @@ spec:
     spec:
       containers:
         - name: argo-server
-          args: ["server", "--secure", "false", "--argo-base-href", "/argo"]
+          env:
+            - name: ARGO_BASE_HREF
+              value: "/argo"
+            - name: ARGO_SECURE
+              value: "false"
+            - name: ARGO_HTTP1
+              value: "true"
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
