@@ -36,7 +36,7 @@ export GH_EMAIL=[...]
 #install ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.3/deploy/static/provider/cloud/deploy.yaml
 
-kustomize build  kustomize/argo-cd/overlays/production | kubectl apply --filename -
+kustomize build  kustomize/argo-cd/base | kubectl apply --filename -
 
 export PASS=$(kubectl --namespace argocd get secret argocd-initial-admin-secret --output jsonpath="{.data.password}" | base64 --decode)
 
@@ -46,3 +46,7 @@ kustomize build kustomize/apps/base | kubectl apply --filename -
 
 ## install argo-events (webhook test)
 kubectl apply --filename applications/argo-events.yaml
+
+
+## install argo-workflows
+kubectl apply --filename applications/argo-workflows.yaml
