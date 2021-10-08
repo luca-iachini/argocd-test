@@ -9,7 +9,9 @@ spec:
         - name: argo-server
           env:
             - name: BASE_HREF
-              value: "/argo"
+              value: "/argo/"
+            - name: ARGO_BASE_HREF
+              value: "/argo/"
             - name: ARGO_SECURE
               value: "false"
             - name: ARGO_HTTP1
