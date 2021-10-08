@@ -8,5 +8,5 @@ spec:
       containers:
         - name: argo-server
           env:
-            - name: BASE_HREF
+            - name: ARGO_BASE_HREF
               value: "/argo"
