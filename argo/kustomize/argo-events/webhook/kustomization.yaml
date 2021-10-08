@@ -5,6 +5,6 @@ resources:
   - rbac.yaml
   - github.com/argoproj/argo-events/manifests/base
   - event-bus.yaml
-  - event-souces.yaml
+  - event-sources.yaml
   - sensors.yaml
 namespace: argo-events
