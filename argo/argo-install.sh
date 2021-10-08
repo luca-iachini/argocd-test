@@ -43,3 +43,6 @@ export PASS=$(kubectl --namespace argocd get secret argocd-initial-admin-secret 
 argocd login --insecure --username admin --password $PASS --grpc-web  kubernetes.docker.internal
 
 kustomize build kustomize/apps/base | kubectl apply --filename -
+
+## install argo-events (webhook test)
+kubectl apply --filename applications/argo-events.yaml
