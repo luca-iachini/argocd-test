@@ -8,14 +8,11 @@ spec:
       containers:
         - name: argo-server
           env:
-            - name: BASE_HREF
-              value: "/argo/"
-            - name: ARGO_BASE_HREF
-              value: "/argo/"
             - name: ARGO_SECURE
               value: "false"
             - name: ARGO_HTTP1
               value: "true"
+          args: ["server", "--basehref", "/argo/"]
           readinessProbe:
             httpGet:
               scheme: HTTP
