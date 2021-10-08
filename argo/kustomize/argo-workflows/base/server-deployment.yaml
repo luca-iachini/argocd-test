@@ -10,3 +10,5 @@ spec:
           env:
             - name: ARGO_BASE_HREF
               value: "/argo"
+            - name: ARGO_SECURE
+              value: "false"
