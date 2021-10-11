@@ -32,7 +32,7 @@ spec:
                     - name: repo_owner
                       value: luca-iachini
                     - name: repo_name
-                      value: argocd-test.git
+                      value: argocd-test
                 templates:
                   - name: git-difference
                     inputs:
@@ -45,8 +45,9 @@ spec:
                       command: [sh]
                       source: |
                         set -e
-                        git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}
-                        MSG=$("{{inputs.parameters.message}}" | jq -r .data | base64 --decode)
+                        git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
+                        cd {{inputs.parameters.repo_name}}
+                        MSG=$(echo "{{inputs.parameters.message}}" | jq -r .data | base64 -d)
                         PACKETS=$(jq -r '.packets[]')
                         echo $PACKETS
                         for packet in ${PACKETS[@]}; do
