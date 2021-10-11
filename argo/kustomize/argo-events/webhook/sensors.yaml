@@ -38,7 +38,7 @@ spec:
                     inputs:
                       parameters:
                         - name: message
-                    container:
+                    script:
                       image: makocchi/alpine-git-curl-jq:latest
                       command: [sh]
                       source: |

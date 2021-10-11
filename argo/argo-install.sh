@@ -44,16 +44,3 @@ kubectl apply --filename applications/argo-workflows.yaml
 SECRET=$(kubectl -n argo get sa workflow -o=jsonpath='{.secrets[0].name}')
 ARGO_TOKEN="Bearer $(kubectl -n argo get secret $SECRET -o=jsonpath='{.data.token}' | base64 --decode)"
 echo $ARGO_TOKEN | pbcopy
-
-
-echo "apiVersion: v1
-kind: Secret
-metadata:
-  name: github-access
-  namespace: workflows
-type: Opaque
-data:
-  token: $(echo -n $GH_TOKEN | base64)
-  user: $(echo -n $GH_ORG | base64)
-  email: $(echo -n $GH_EMAIL | base64)" \
-| tee argo-workflows/overlays/workflows/githubcred.yaml
