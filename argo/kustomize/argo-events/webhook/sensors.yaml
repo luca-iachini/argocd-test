@@ -24,20 +24,33 @@ spec:
               metadata:
                 generateName: webhook-
               spec:
-                entrypoint: whalesay
+                entrypoint: git-difference
                 arguments:
                   parameters:
                     - name: message
-                      value: hello world
+                      value: '{"packets": []}'
+                    - name: repo_owner
+                      value: luca-iachini
+                    - name: repo_name
+                      value: argocd-test.git
                 templates:
-                  - name: whalesay
+                  - name: git-difference
                     inputs:
                       parameters:
                         - name: message
                     container:
-                      image: docker/whalesay:latest
-                      command: [cowsay]
-                      args: ["{{inputs.parameters.message}}"]
+                      image: makocchi/alpine-git-curl-jq:latest
+                      command: [sh]
+                      source: |
+                        set -e
+                        git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}
+                        MSG=$("{{inputs.parameters.message}}" | jq -r .data | base64 --decode)
+                        PACKETS=$(jq -r '.packets[]')
+                        echo $PACKETS
+                        for packet in ${PACKETS[@]}; do
+                          modified=$(git log --format= -n 1 --name-only | egrep "^go/$packet" | wc -l)
+                          echo $packet modified
+                        done
           parameters:
             - src:
                 dependencyName: test-dep

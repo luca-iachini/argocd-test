@@ -10,27 +10,15 @@
 # - k8s v1.19+ cluster with nginx Ingress
 
 # Replace `[...]` with the GitHub organization or the username
-export GH_ORG=[...]
-
-# Replace `[...]` with the base host accessible through NGINX Ingress
-export BASE_HOST=[...] # e.g., $INGRESS_HOST.nip.io
+export GH_ORG=luca-iachini
 
 export REGISTRY_SERVER=https://index.docker.io/v1/
 
-# Replace `[...]` with the registry username
-export REGISTRY_USER=[...]
-
-# Replace `[...]` with the registry password
-export REGISTRY_PASS=[...]
-
-# Replace `[...]` with the registry email
-export REGISTRY_EMAIL=[...]
-
 # Replace `[...]` with the GitHub token
-export GH_TOKEN=[...]
+export GH_TOKEN=
 
 # Replace `[...]` with the GitHub email
-export GH_EMAIL=[...]
+export GH_EMAIL=luca.iachini@patchai.io
 
 
 #install ingress
@@ -46,7 +34,26 @@ kustomize build kustomize/apps/base | kubectl apply --filename -
 
 ## install argo-events (webhook test)
 kubectl apply --filename applications/argo-events.yaml
+# test events: curl -X POST -d '{"message": "Test"}' http://kubernetes.docker.internal/push
 
 
-## install argo-workflows
+## install argo-workflows 
+# these steps add also the argo server. Retrieve the token from the secret of workflow to log into the server
+# It is possible to enable the sso with the argocd dex (https://argoproj.github.io/argo-workflows/argo-server-sso-argocd/).
 kubectl apply --filename applications/argo-workflows.yaml
+SECRET=$(kubectl -n argo get sa workflow -o=jsonpath='{.secrets[0].name}')
+ARGO_TOKEN="Bearer $(kubectl -n argo get secret $SECRET -o=jsonpath='{.data.token}' | base64 --decode)"
+echo $ARGO_TOKEN | pbcopy
+
+
+echo "apiVersion: v1
+kind: Secret
+metadata:
+  name: github-access
+  namespace: workflows
+type: Opaque
+data:
+  token: $(echo -n $GH_TOKEN | base64)
+  user: $(echo -n $GH_ORG | base64)
+  email: $(echo -n $GH_EMAIL | base64)" \
+| tee argo-workflows/overlays/workflows/githubcred.yaml
