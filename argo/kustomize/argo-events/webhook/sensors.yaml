@@ -38,6 +38,8 @@ spec:
                     inputs:
                       parameters:
                         - name: message
+                        - name: repo_owner
+                        - name: repo_name
                     script:
                       image: makocchi/alpine-git-curl-jq:latest
                       command: [sh]
