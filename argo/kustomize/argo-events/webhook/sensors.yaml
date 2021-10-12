@@ -49,12 +49,12 @@ spec:
                         pwd
                         echo '{{inputs.parameters.message}}'
                         MSG=$(echo '{{inputs.parameters.message}}' | jq -r .data | base64 -d)
-                        PACKETS=$(echo $MSG | jq -r '.packets[]')
-                        echo $PACKETS
-                        while read -r packet; do
-                          modified=$(git log --format= -n 1 --name-only | egrep "^go/$packet" | wc -l)
-                          echo $packet $modified
-                        done <<< "$PACKETS"
+                        PACKAGES=$(echo $MSG | jq -r '.body.packages[]')
+                        echo $PACKAGES
+                        while read -r package; do
+                          modified=$(git log --format= -n 1 --name-only | egrep "^go/$package" | wc -l)
+                          echo $package $modified
+                        done <<< "$PACKAGES"
           parameters:
             - src:
                 dependencyName: test-dep
