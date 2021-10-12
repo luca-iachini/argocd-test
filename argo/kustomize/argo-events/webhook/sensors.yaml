@@ -55,7 +55,7 @@ spec:
                         for package in $PACKAGES
                         do
                           modified=$(git log --format= -n 1 --name-only | egrep "^go/$package" | wc -l)
-                          echo $package $modified
+                          echo "$package $modified"
                         done
           parameters:
             - src:
