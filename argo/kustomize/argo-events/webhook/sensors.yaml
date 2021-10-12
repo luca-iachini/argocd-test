@@ -52,10 +52,11 @@ spec:
                         echo $DATA
                         PACKAGES=$(echo $DATA | jq -r '.body.packages[]')
                         echo $PACKAGES
-                        while read -r package; do
+                        for package in $PACKAGES
+                        do
                           modified=$(git log --format= -n 1 --name-only | egrep "^go/$package" | wc -l)
                           echo $package $modified
-                        done << "$PACKAGES"
+                        done
           parameters:
             - src:
                 dependencyName: test-dep
