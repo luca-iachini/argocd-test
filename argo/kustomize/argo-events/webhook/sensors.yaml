@@ -48,8 +48,9 @@ spec:
                         cd {{inputs.parameters.repo_name}}
                         pwd
                         echo '{{inputs.parameters.message}}'
-                        MSG=$(echo '{{inputs.parameters.message}}' | jq -r .data | base64 -d)
-                        PACKAGES=$(echo $MSG | jq -r '.body.packages[]')
+                        DATA=$(echo '{{inputs.parameters.message}}' | jq -r '.data' | base64 -d)
+                        echo $DATA
+                        PACKAGES=$(echo $DATA | jq -r '.body.packages[]')
                         echo $PACKAGES
                         while read -r package; do
                           modified=$(git log --format= -n 1 --name-only | egrep "^go/$package" | wc -l)
