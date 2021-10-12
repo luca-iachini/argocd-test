@@ -46,8 +46,6 @@ spec:
                       source: |
                         git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
                         cd {{inputs.parameters.repo_name}}
-                        pwd
-                        echo '{{inputs.parameters.message}}'
                         DATA=$(echo '{{inputs.parameters.message}}' | jq -r '.data' | base64 -d)
                         echo $DATA
                         PACKAGES=$(echo $DATA | jq -r '.body.packages[]')
