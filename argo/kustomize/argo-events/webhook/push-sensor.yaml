@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: webhook
+  name: webhook-push
 spec:
   template:
     serviceAccountName: argo-events-sa
   dependencies:
-    - name: test-dep
+    - name: webhook-push-dep
       eventSourceName: webhook
-      eventName: example
+      eventName: push
   triggers:
     - template:
         name: webhook-workflow-trigger
@@ -46,16 +46,13 @@ spec:
                       source: |
                         git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
                         cd {{inputs.parameters.repo_name}}
-                        DATA=$(echo '{{inputs.parameters.message}}' | jq -r '.data' | base64 -d)
-                        echo $DATA
-                        PACKAGES=$(echo $DATA | jq -r '.body.packages[]')
+                        PACKAGES=$(git log --format= -n 1 --name-only | pcregrep -o1 "^go\/(.*?)\/.*" | sort | uniq)
                         echo $PACKAGES
                         for package in $PACKAGES
+                          curl -X POST -d '{"package": "$package"}' http://webhook-eventsource-svc:13000/start
                         do
-                          modified=$(git log --format= -n 1 --name-only | egrep "^go/$package" | wc -l)
-                          echo "$package $modified"
                         done
           parameters:
             - src:
-                dependencyName: test-dep
+                dependencyName: push
               dest: spec.arguments.parameters.0.value
