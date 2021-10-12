@@ -49,6 +49,7 @@ spec:
                         cd {{inputs.parameters.repo_name}}
                         PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
                         echo $PACKAGES
+                        IFS=$'\n'
                         for package in $PACKAGES
                         do
                           curl -X POST -d '{"package": "$package"}' http://webhook-eventsource-svc:13000/start
