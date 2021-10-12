@@ -7,7 +7,7 @@ import (
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "App1 is running")
+	fmt.Fprintf(w, "App1 greatings")
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
