@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: webhook-start
+spec:
+  template:
+    serviceAccountName: argo-events-sa
+  dependencies:
+    - name: webhook-start-dep
+      eventSourceName: webhook
+      eventName: start
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          group: argoproj.io
+          version: v1alpha1
+          resource: workflows
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: webhook-
+              spec:
+                entrypoint: build
+                arguments:
+                  parameters:
+                    - name: message
+                      value: '{"package": "app1"}'
+                    - name: repo_owner
+                      value: luca-iachini
+                    - name: repo_name
+                      value: argocd-test
+                templates:
+                  - name: build
+                    inputs:
+                      parameters:
+                        - name: message
+                        - name: repo_owner
+                        - name: repo_name
+                    script:
+                      image: makocchi/alpine-git-curl-jq:latest
+                      command: [sh]
+                      source: |
+                        set -x
+                        git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
+                        cd {{inputs.parameters.repo_name}}
+                        DATA=$(echo '{{inputs.parameters.message}}' | jq -r '.data' | base64 -d)
+                        echo $DATA
+                        PACKAGE=$(echo $DATA | jq -r '.body.package')
+                        echo "start $PACKAGE build!!"
+          parameters:
+            - src:
+                dependencyName: webhook-start-dep
+              dest: spec.arguments.parameters.0.value

@@ -8,6 +8,8 @@ spec:
     ports:
       - port: 12000
         targetPort: 12000
+      - port: 13000
+        targetPort: 13000
   webhook:
     push:
       port: "12000"
