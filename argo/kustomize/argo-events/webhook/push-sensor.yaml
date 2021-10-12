@@ -44,13 +44,14 @@ spec:
                       image: makocchi/alpine-git-curl-jq:latest
                       command: [sh]
                       source: |
+                        set -x
                         git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
                         cd {{inputs.parameters.repo_name}}
-                        PACKAGES=$(git log --format= -n 1 --name-only | pcregrep -o1 "^go\/(.*?)\/.*" | sort | uniq)
+                        PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
                         echo $PACKAGES
                         for package in $PACKAGES
-                          curl -X POST -d '{"package": "$package"}' http://webhook-eventsource-svc:13000/start
                         do
+                          curl -X POST -d '{"package": "$package"}' http://webhook-eventsource-svc:13000/start
                         done
           parameters:
             - src:
