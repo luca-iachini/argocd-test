@@ -54,5 +54,5 @@ spec:
                         done
           parameters:
             - src:
-                dependencyName: push
+                dependencyName: webhook-push-dep
               dest: spec.arguments.parameters.0.value
