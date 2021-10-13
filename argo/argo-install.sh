@@ -33,14 +33,12 @@ argocd login --insecure --username admin --password $PASS --grpc-web  kubernetes
 
 kubectl apply -f projects/project.yaml
 
-kustomize build kustomize/apps/base | kubectl apply --filename -
-
 ## install argo-events (webhook test)
 kubectl apply --filename applications/argo-events.yaml
 # test events: curl -X POST -d '{"message": "Test"}' http://kubernetes.docker.internal/push
 
 
-## install argo-workflows 
+## install argo-workflows
 # these steps add also the argo server. Retrieve the token from the secret of workflow to log into the server
 # It is possible to enable the sso with the argocd dex (https://argoproj.github.io/argo-workflows/argo-server-sso-argocd/).
 kubectl apply --filename applications/argo-workflows.yaml
