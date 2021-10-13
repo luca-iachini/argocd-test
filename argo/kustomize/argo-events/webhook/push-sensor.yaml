@@ -36,6 +36,7 @@ spec:
                   dag:
                     tasks:
                       - name: git-difference
+                        template: git-difference
                         arguments:
                           parameters:
                             - name: message
@@ -45,6 +46,7 @@ spec:
                             - name: repo_name
                               value: "argocd-test"
                       - name: build
+                        template: build
                         arguments:
                           parameters:
                             - name: package
