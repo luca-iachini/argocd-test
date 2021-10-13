@@ -24,11 +24,14 @@ export GH_EMAIL=luca.iachini@patchai.io
 #install ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.3/deploy/static/provider/cloud/deploy.yaml
 
+
 kustomize build  kustomize/argo-cd/base | kubectl apply --filename -
 
 export PASS=$(kubectl --namespace argocd get secret argocd-initial-admin-secret --output jsonpath="{.data.password}" | base64 --decode)
 
 argocd login --insecure --username admin --password $PASS --grpc-web  kubernetes.docker.internal
+
+kubectl apply -f projects/project.yaml
 
 kustomize build kustomize/apps/base | kubectl apply --filename -
 

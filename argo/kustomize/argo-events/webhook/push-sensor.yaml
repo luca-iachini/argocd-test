@@ -52,10 +52,14 @@ spec:
                             PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
                             echo $PACKAGES
                       - name: build
-                        templateRef:
-                          name: container-build
-                          template: build-kaniko
-                          clusterScope: true
+                        inputs:
+                          parameters:
+                            - name: package
+                        script:
+                          image: makocchi/alpine-git-curl-jq:latest
+                          command: [sh]
+                          source: |
+                            echo {{inputs.parameters.package}}
                         arguments:
                           parameters:
                             - name: package
