@@ -25,10 +25,10 @@ spec:
             metadata:
               generateName: webhook-
             spec:
-              entrypoint: build
+              entrypoint: pipeline
               serviceAccountName: workflow
               templates:
-                - name: build
+                - name: pipeline
                   dag:
                     tasks:
                       - name: git-difference
