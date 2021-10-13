@@ -65,8 +65,8 @@ spec:
                             - name: package
                               value: "{{item}}"
                           withItems: "{{tasks.git-difference.outputs.result}}"
-                          dependencies:
-                            - git-difference
+                        dependencies:
+                          - git-difference
         parameters:
           - src:
             dependencyName: webhook-push-dep
