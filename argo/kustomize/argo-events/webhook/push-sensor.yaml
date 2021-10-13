@@ -59,8 +59,8 @@ spec:
                         arguments:
                           parameters:
                             - name: package
-                              value: { { item } }
-                          withItems: { { tasks.git-difference.outputs.result } }
+                              value: "{{item}}"
+                          withItems: "{{tasks.git-difference.outputs.result}}"
                           dependencies:
                             - git-difference
         parameters:
