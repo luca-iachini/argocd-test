@@ -7,5 +7,4 @@ resources:
   - event-bus.yaml
   - event-sources.yaml
   - push-sensor.yaml
-  - start-sensor.yaml
 namespace: argo-events

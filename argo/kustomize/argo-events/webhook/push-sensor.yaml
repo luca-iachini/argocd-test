@@ -11,50 +11,59 @@ spec:
       eventName: push
   triggers:
     - template:
-        name: webhook-workflow-trigger
-        k8s:
-          group: argoproj.io
-          version: v1alpha1
-          resource: workflows
-          operation: create
-          source:
-            resource:
-              apiVersion: argoproj.io/v1alpha1
-              kind: Workflow
-              metadata:
-                generateName: webhook-
-              spec:
-                entrypoint: git-difference
-                arguments:
-                  parameters:
-                    - name: message
-                      value: '{"packets": []}'
-                    - name: repo_owner
-                      value: luca-iachini
-                    - name: repo_name
-                      value: argocd-test
-                templates:
-                  - name: git-difference
-                    inputs:
-                      parameters:
-                        - name: message
-                        - name: repo_owner
-                        - name: repo_name
-                    script:
-                      image: makocchi/alpine-git-curl-jq:latest
-                      command: [sh]
-                      source: |
-                        set -x
-                        git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
-                        cd {{inputs.parameters.repo_name}}
-                        PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-                        echo $PACKAGES
-                        IFS=$'\n'
-                        for package in $PACKAGES
-                        do
-                          curl -X POST -d '{"package": "$package"}' http://webhook-eventsource-svc:13000/start
-                        done
-          parameters:
-            - src:
-                dependencyName: webhook-push-dep
-              dest: spec.arguments.parameters.0.value
+      name: webhook-workflow-trigger
+      k8s:
+        group: argoproj.io
+        version: v1alpha1
+        resource: workflows
+        operation: create
+        source:
+          resource:
+            apiVersion: argoproj.io/v1alpha1
+            kind: Workflow
+            metadata:
+              generateName: webhook-
+            spec:
+              entrypoint: git-difference
+              arguments:
+                parameters:
+                  - name: message
+                    value: '{}'
+                  - name: repo_owner
+                    value: luca-iachini
+                  - name: repo_name
+                    value: argocd-test
+              templates:
+                - name: build
+                dag:
+                  tasks:
+                    - name: git-difference
+                      inputs:
+                        parameters:
+                          - name: message
+                          - name: repo_owner
+                          - name: repo_name
+                      script:
+                        image: makocchi/alpine-git-curl-jq:latest
+                        command: [sh]
+                        source: |
+                          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
+                          cd {{inputs.parameters.repo_name}}
+                          PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
+                          echo $PACKAGES
+                    - name: build
+                      templateRef:
+                        name: container-build
+                        template: build-kaniko
+                        clusterScope: true
+                      arguments:
+                        parameters:
+                          - name: package
+                            value: {{item}}
+                        withItems: {{tasks.git-difference.outputs.result}}
+                        dependencies:
+                          - git-difference
+        parameters:
+          - src:
+            dependencyName: webhook-push-dep
+            dest: spec.arguments.parameters.0.value
