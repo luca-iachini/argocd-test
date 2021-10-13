@@ -12,11 +12,8 @@ spec:
   triggers:
     - template:
       name: webhook-workflow-trigger
-      argoWorkflow:
-        group: argoproj.io
-        version: v1alpha1
-        resource: workflows
-        operation: submit
+      k8s:
+        operation: create
         parameters:
           - src:
             dependencyName: webhook-push-dep
@@ -27,7 +24,6 @@ spec:
             kind: Workflow
             metadata:
               generateName: webhook-
-              namespace: workflows
             spec:
               entrypoint: build
               serviceAccountName: workflow
