@@ -24,45 +24,45 @@ spec:
             metadata:
               generateName: webhook-
             spec:
-              entrypoint: git-difference
+              entrypoint: build
               arguments:
                 parameters:
                   - name: message
-                    value: '{}'
+                    value: "{}"
                   - name: repo_owner
                     value: luca-iachini
                   - name: repo_name
                     value: argocd-test
               templates:
                 - name: build
-                dag:
-                  tasks:
-                    - name: git-difference
-                      inputs:
-                        parameters:
-                          - name: message
-                          - name: repo_owner
-                          - name: repo_name
-                      script:
-                        image: makocchi/alpine-git-curl-jq:latest
-                        command: [sh]
-                        source: |
-                          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
-                          cd {{inputs.parameters.repo_name}}
-                          PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-                          echo $PACKAGES
-                    - name: build
-                      templateRef:
-                        name: container-build
-                        template: build-kaniko
-                        clusterScope: true
-                      arguments:
-                        parameters:
-                          - name: package
-                            value: {{item}}
-                        withItems: {{tasks.git-difference.outputs.result}}
-                        dependencies:
-                          - git-difference
+                  dag:
+                    tasks:
+                      - name: git-difference
+                        inputs:
+                          parameters:
+                            - name: message
+                            - name: repo_owner
+                            - name: repo_name
+                        script:
+                          image: makocchi/alpine-git-curl-jq:latest
+                          command: [sh]
+                          source: |
+                            git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
+                            cd {{inputs.parameters.repo_name}}
+                            PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
+                            echo $PACKAGES
+                      - name: build
+                        templateRef:
+                          name: container-build
+                          template: build-kaniko
+                          clusterScope: true
+                        arguments:
+                          parameters:
+                            - name: package
+                              value: { { item } }
+                          withItems: { { tasks.git-difference.outputs.result } }
+                          dependencies:
+                            - git-difference
         parameters:
           - src:
             dependencyName: webhook-push-dep
