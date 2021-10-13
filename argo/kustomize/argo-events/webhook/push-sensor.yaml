@@ -20,7 +20,7 @@ spec:
         parameters:
           - src:
             dependencyName: webhook-push-dep
-            dest: spec.templates.0.dag.tasks.0.arguments.parameters.message.value
+            dest: spec.templates.0.dag.tasks.0.arguments.parameters.0.value
         source:
           resource:
             apiVersion: argoproj.io/v1alpha1
