@@ -23,6 +23,7 @@ spec:
             resource:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
+              namespace: workflow
               metadata:
                 name: push-trigger
               spec:
