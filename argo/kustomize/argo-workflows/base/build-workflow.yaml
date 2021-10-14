@@ -41,8 +41,16 @@ spec:
         source: |
           git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
           cd {{inputs.parameters.repo_name}}
-          PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-          echo $PACKAGES
+          packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
+          echo -n '['
+          last=$(echo $packages | tail -n 1)
+          echo $packages | while read package; do
+            echo -n "\"$package\""
+            if [ "$package" != "$last" ]; then
+              echo -n ","
+            fi
+          done
+          echo ']'
     - name: build
       inputs:
         parameters:
