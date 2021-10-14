@@ -19,9 +19,15 @@ spec:
         operation: submit
         metadata:
           generateName: push-workflow-build-
-        spec:
-          serviceAccountName: workflow
-          entrypoint: pipeline
-          workflowTemplateRef:
-            name: build-pipeline
-            clusterScope: true
+        source:
+          resource:
+            apiVersion: argoproj.io/v1alpha1
+            kind: Workflow
+            metadata:
+              name: push-trigger
+            spec:
+              serviceAccountName: workflow
+              entrypoint: pipeline
+              workflowTemplateRef:
+                name: build-pipeline
+                clusterScope: true

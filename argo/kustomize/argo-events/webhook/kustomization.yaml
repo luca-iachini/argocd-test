@@ -6,6 +6,6 @@ resources:
   - github.com/argoproj/argo-events/manifests/base
   - event-bus.yaml
   - event-sources.yaml
-  - example-sensor.yaml
-  #- push-sensor.yaml
+  #- example-sensor.yaml
+  - push-sensor.yaml
 namespace: argo-events
