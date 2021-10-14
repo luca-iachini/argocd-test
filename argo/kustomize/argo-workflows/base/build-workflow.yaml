@@ -45,7 +45,7 @@ spec:
           echo -n '['
           last=$(echo $packages | tail -n 1)
           echo $packages | while read package; do
-            echo -n "\"$package\""
+            [ ! -z "$var" ] && echo -n "\"$package\""
             if [ "$package" != "$last" ]; then
               echo -n ","
             fi
