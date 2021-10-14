@@ -11,23 +11,23 @@ spec:
       eventName: push
   triggers:
     - template:
-      name: webhook-workflow-trigger
-      argoWorkflow:
-        group: argoproj.io
-        version: v1alpha1
-        resource: Workflow
-        operation: submit
-        metadata:
-          generateName: push-workflow-build-
-        source:
-          resource:
-            apiVersion: argoproj.io/v1alpha1
-            kind: Workflow
-            metadata:
-              name: push-trigger
-            spec:
-              serviceAccountName: workflow
-              entrypoint: pipeline
-              workflowTemplateRef:
-                name: build-pipeline
-                clusterScope: true
+        name: webhook-workflow-trigger
+        argoWorkflow:
+          group: argoproj.io
+          version: v1alpha1
+          resource: Workflow
+          operation: submit
+          metadata:
+            generateName: push-workflow-build-
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                name: push-trigger
+              spec:
+                serviceAccountName: workflow
+                entrypoint: pipeline
+                workflowTemplateRef:
+                  name: build-pipeline
+                  clusterScope: true
