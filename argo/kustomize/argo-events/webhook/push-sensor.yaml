@@ -12,64 +12,16 @@ spec:
   triggers:
     - template:
       name: webhook-workflow-trigger
-      k8s:
-        operation: create
-        parameters:
-          - src:
-            dependencyName: webhook-push-dep
-            dest: spec.templates.0.dag.tasks.0.arguments.parameters.0.value
-        source:
-          resource:
-            apiVersion: argoproj.io/v1alpha1
-            kind: Workflow
-            metadata:
-              generateName: webhook-
-            spec:
-              entrypoint: pipeline
-              serviceAccountName: workflow
-              templates:
-                - name: pipeline
-                  dag:
-                    tasks:
-                      - name: git-difference
-                        template: git-difference
-                        arguments:
-                          parameters:
-                            - name: message
-                              value: "{}"
-                            - name: repo_owner
-                              value: "luca-iachini"
-                            - name: repo_name
-                              value: "argocd-test"
-                      - name: build
-                        template: build
-                        arguments:
-                          parameters:
-                            - name: package
-                              value: "{{item}}"
-                        withItems: "{{tasks.git-difference.outputs.result}}"
-                        dependencies:
-                          - git-difference
-                - name: git-difference
-                  inputs:
-                    parameters:
-                      - name: message
-                      - name: repo_owner
-                      - name: repo_name
-                  script:
-                    image: makocchi/alpine-git-curl-jq:latest
-                    command: [sh]
-                    source: |
-                      git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
-                      cd {{inputs.parameters.repo_name}}
-                      PACKAGES=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-                      echo $PACKAGES
-                - name: build
-                  inputs:
-                    parameters:
-                      - name: package
-                  script:
-                    image: makocchi/alpine-git-curl-jq:latest
-                    command: [sh]
-                    source: |
-                      echo {{inputs.parameters.package}}
+      argoWorkflow:
+        group: argoproj.io
+        version: v1alpha1
+        resource: Workflow
+        operation: submit
+        metadata:
+          generateName: push-workflow-build-
+        spec:
+          serviceAccountName: workflow
+          entrypoint: pipeline
+          workflowTemplateRef:
+            name: build-pipeline
+            clusterScope: true
