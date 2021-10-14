@@ -39,7 +39,7 @@ spec:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
         source: |
-          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git > /dev/null
+          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git > /dev/null 2>&1
           cd {{inputs.parameters.repo_name}}
           packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
           echo -n '['
