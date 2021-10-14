@@ -56,4 +56,4 @@ spec:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
         source: |
-          echo {{inputs.parameters.package}}
+          echo "{{inputs.parameters.package}}"
