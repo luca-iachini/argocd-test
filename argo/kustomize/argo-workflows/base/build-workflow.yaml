@@ -52,8 +52,9 @@ spec:
       inputs:
         parameters:
           - name: package
+            value: "test"
       script:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
         source: |
-          echo "{{inputs.parameters.package}}"
+          echo "building package {{inputs.parameters.package}}"
