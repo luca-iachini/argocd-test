@@ -15,7 +15,7 @@ spec:
             arguments:
               parameters:
                 - name: message
-                  value: "{{inputs.parameters.message}}"
+                  value: "{}"
                 - name: repo_owner
                   value: "luca-iachini"
                 - name: repo_name
