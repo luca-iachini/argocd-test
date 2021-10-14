@@ -42,15 +42,12 @@ spec:
           git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git > /dev/null 2>&1
           cd {{inputs.parameters.repo_name}}
           packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-          echo -n '['
-          last=$(echo $packages | tail -n 1)
-          echo $packages | while read package; do
-            [ ! -z "$package" ] && echo -n "\"$package\""
-            if [ "$package" != "$last" ]; then
-              echo -n ","
-            fi
+          json=""
+          for package in $packages
+          do
+            [ ! -z "$package" ] && json="$json\"$package\","
           done
-          echo ']'
+          echo "[${json::-1}]"
     - name: build
       inputs:
         parameters:
