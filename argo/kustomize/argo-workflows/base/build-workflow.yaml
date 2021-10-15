@@ -60,11 +60,11 @@ spec:
           git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
           cd {{inputs.parameters.repo_name}}
           git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq > /tmp/packages
-        outputs:
-          parameters:
-          - name: package
-            valueFrom:
-              path: /tmp/packages
+      outputs:
+        parameters:
+        - name: package
+          valueFrom:
+            path: /tmp/packages
     - name: build
       inputs:
         parameters:
