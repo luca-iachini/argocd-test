@@ -49,7 +49,7 @@ spec:
         parameters:
         - name: package
           valueFrom:
-            path: /tmp/packages
+            path: /mnt/out/packages
       volumes:
         - name: out
           emptyDir: {}
