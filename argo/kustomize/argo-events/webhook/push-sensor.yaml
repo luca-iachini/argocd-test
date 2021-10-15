@@ -23,6 +23,7 @@ spec:
               kind: Workflow
               metadata:
                 generateName: push-trigger-
+                namespace: argo
               spec:
                 entrypoint: pipeline
                 serviceAccountName: workflow

@@ -52,7 +52,7 @@ spec:
             path: /mnt/out/packages
       volumes:
         - name: out
-          emptyDir: {}
+          emptyDir: { }
     - name: build
       inputs:
         parameters:
