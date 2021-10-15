@@ -131,9 +131,6 @@ spec:
       volumeMounts:
       - name: github-access
         mountPath: /.github/
-        volumeMounts:
-          - name: github-access
-            mountPath: /.github/
       volumes:
         - name: github-access
           secret:
