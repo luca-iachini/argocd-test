@@ -34,10 +34,21 @@ spec:
             arguments:
               parameters:
                 - name: package
-                  value: "{{item}}"
-            withParam: "{{tasks.git-difference.outputs.parameters.packages}}"
+                  value: "{{tasks.build.outputs.parameters.package}}"
             dependencies:
               - build
+          - name: promote
+            template: promote
+            arguments:
+              parameters:
+                - name: package
+                  value: "{{tasks.test.outputs.parameters.package}}"
+                - name: repo_owner
+                  value: "luca-iachini"
+                - name: repo_name
+                  value: "argocd-test"
+            dependencies:
+              - test
     - name: git-difference
       inputs:
         parameters:
@@ -73,8 +84,12 @@ spec:
         parameters:
           - name: package
             value: "test"
+      outputs:
+        parameters:
+          - name: package
+            value: "{{input.parameters.package}}"
       script:
-        image: makocchi/alpine-git-curl-jq:latest
+        image: makocchi/alpine:latest
         command: [sh]
         source: |
           echo "building package {{inputs.parameters.package}}"
@@ -83,8 +98,50 @@ spec:
         parameters:
           - name: package
             value: "test"
+      outputs:
+        parameters:
+          - name: package
+            value: "{{input.parameters.package}}"
       script:
-        image: makocchi/alpine-git-curl-jq:latest
+        image: makocchi/alpine:latest
         command: [sh]
         source: |
           echo "testing package {{inputs.parameters.package}}"
+    - name: promote
+      inputs:
+        parameters:
+          - name: package
+          - name: repo_owner
+          - name: repo_name
+      script:
+        image: smartive/kustomize:latest
+        command: [sh]
+        source: |
+          echo "promoting package {{inputs.parameters.package}}"
+          set -e
+          git clone https://$(cat /.github/token)@github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}
+          cd {{inputs.parameters.repo_name}}
+          git config user.name "$(cat /.github/user)"
+          git config user.email "$(cat /.github/email)"
+          cd kustomize/base/{{inputs.parameters.package}}
+          kustomize edit set image alpine:3.6
+          git add .
+          git commit -m "Upgraded {{inputs.parameters.package}} image tag"
+          git push
+      volumeMounts:
+      - name: github-access
+        mountPath: /.github/
+        volumeMounts:
+          - name: github-access
+            mountPath: /.github/
+      volumes:
+        - name: github-access
+          secret:
+            secretName: github-access
+            items:
+              - key: token
+                path: token
+              - key: email
+                path: email
+              - key: user
+                path: user

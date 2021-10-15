@@ -5,5 +5,5 @@ resources:
 - service.yaml
 - deployment.yaml
 images:
-- name: app1
-  newTag: v1
+- name: alpine
+  newTag: "3.6"
