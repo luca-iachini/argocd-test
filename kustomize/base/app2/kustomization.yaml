@@ -7,6 +7,3 @@ resources:
 images:
 - name: alpine
   newTag: "3.4"
-- name: app2
-  newName: alpine
-  newTag: "3.6"
