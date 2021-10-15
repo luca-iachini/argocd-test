@@ -15,19 +15,17 @@ spec:
         argoWorkflow:
           group: argoproj.io
           version: v1alpha1
-          resource: Workflow
+          resource: workflows
           operation: submit
-          metadata:
-            generateName: push-build-pipeline-
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                name: push-trigger
+                generateName: push-trigger-
               spec:
-                serviceAccountName: workflow
                 entrypoint: pipeline
+                serviceAccountName: workflow
                 workflowTemplateRef:
                   name: build-pipeline
                   clusterScope: true
