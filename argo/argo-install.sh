@@ -42,3 +42,6 @@ data:
   user: $(echo -n $GH_ORG | base64)
   email: $(echo -n $GH_EMAIL | base64)" \
   | kubectl apply -f -
+
+# install application
+kubectl apply -f applications/go-apps.yaml

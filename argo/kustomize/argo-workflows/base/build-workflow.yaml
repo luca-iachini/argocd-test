@@ -126,7 +126,7 @@ spec:
           git config user.name "$(cat /.github/user)"
           git config user.email "$(cat /.github/email)"
           cd kustomize/base/{{inputs.parameters.package}}
-          kustomize edit set image alpine:3.6
+          kustomize edit set image alpine:3.4
           git add .
           git commit -m "Upgraded {{inputs.parameters.package}} image tag"
           git push
