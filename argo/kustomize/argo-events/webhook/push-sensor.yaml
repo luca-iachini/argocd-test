@@ -15,20 +15,13 @@ spec:
         argoWorkflow:
           group: argoproj.io
           version: v1alpha1
-          resource: Workflow
+          kind: Workflow
           operation: resubmit
           metadata:
-            generateName: push-workflow-build-
-          source:
-            resource:
-              apiVersion: argoproj.io/v1alpha1
-              kind: Workflow
-              metadata:
-                namespace: argo
-                name: build-pipeline
-              spec:
-                serviceAccountName: workflow
-                entrypoint: pipeline
-                workflowTemplateRef:
-                  name: build-pipeline
-                  clusterScope: true
+            generateName: push-build-pipeline-
+          spec:
+            serviceAccountName: workflow
+            entrypoint: pipeline
+            workflowTemplateRef:
+              name: build-pipeline
+              clusterScope: true
