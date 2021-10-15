@@ -89,7 +89,7 @@ spec:
           - name: package
             value: "{{input.parameters.package}}"
       script:
-        image: makocchi/alpine:latest
+        image: alpine:latest
         command: [sh]
         source: |
           echo "building package {{inputs.parameters.package}}"
@@ -103,7 +103,7 @@ spec:
           - name: package
             value: "{{input.parameters.package}}"
       script:
-        image: makocchi/alpine:latest
+        image: alpine:latest
         command: [sh]
         source: |
           echo "testing package {{inputs.parameters.package}}"
