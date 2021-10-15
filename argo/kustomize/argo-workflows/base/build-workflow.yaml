@@ -41,7 +41,13 @@ spec:
         source: |
           git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
           cd {{inputs.parameters.repo_name}}
-          git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq > /mnt/out/packages
+          packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
+          json=""
+          for package in $packages
+          do
+            [ ! -z "$package" ] && json="$json\"$package\","
+          done
+          echo "[${json::-1}]" > /mnt/out/packages
         volumeMounts:
           - name: out
             mountPath: /mnt/out
