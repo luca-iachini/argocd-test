@@ -16,7 +16,7 @@ spec:
           group: argoproj.io
           version: v1alpha1
           resource: Workflow
-          operation: submit
+          operation: resubmit
           metadata:
             generateName: push-build-pipeline-
           source:
