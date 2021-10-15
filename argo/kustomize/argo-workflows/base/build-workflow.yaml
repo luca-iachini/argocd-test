@@ -26,7 +26,7 @@ spec:
               parameters:
                 - name: package
                   value: "{{item.package}}"
-            withParam: "{{git-difference.outputs.parameters}}"
+            withParam: "{{tasks.git-difference.outputs.parameters}}"
             dependencies:
               - git-difference
     - name: git-difference
