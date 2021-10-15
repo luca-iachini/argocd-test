@@ -25,10 +25,28 @@ spec:
             arguments:
               parameters:
                 - name: package
-                  value: "{{item}}"
-            withParam: "{{tasks.git-difference.outputs.result}}"
+                  value: "{{item.package}}"
+            withParam: "{{tasks.git-difference.outputs.parameters}}"
             dependencies:
               - git-difference
+          - name: test
+            template: test
+            arguments:
+              parameters:
+                - name: package
+                  value: "{{item.package}}"
+            withParam: "{{tasks.git-difference.outputs.parameters}}"
+            dependencies:
+              - build
+          - name: promote
+            template: promote
+            arguments:
+              parameters:
+                - name: package
+                  value: "{{item.package}}"
+            withParam: "{{tasks.git-difference.outputs.parameters}}"
+            dependencies:
+              - test
     - name: git-difference
       inputs:
         parameters:
@@ -39,15 +57,14 @@ spec:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
         source: |
-          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git > /dev/null 2>&1
+          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
           cd {{inputs.parameters.repo_name}}
-          packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
-          json=""
-          for package in $packages
-          do
-            [ ! -z "$package" ] && json="$json\"$package\","
-          done
-          echo "[${json::-1}]"
+          git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq > /tmp/packages
+        outputs:
+          parameters:
+          - name: package
+            valueFrom:
+              path: /tmp/packages
     - name: build
       inputs:
         parameters:
@@ -58,3 +75,23 @@ spec:
         command: [sh]
         source: |
           echo "building package {{inputs.parameters.package}}"
+    - name: test
+      inputs:
+        parameters:
+          - name: package
+            value: "test"
+      script:
+        image: makocchi/alpine-git-curl-jq:latest
+        command: [sh]
+        source: |
+          echo "testing package {{inputs.parameters.package}}"
+    - name: promote
+      inputs:
+        parameters:
+          - name: package
+            value: "test"
+      script:
+        image: makocchi/alpine-git-curl-jq:latest
+        command: [sh]
+        source: |
+          echo "promoting package {{inputs.parameters.package}}"
