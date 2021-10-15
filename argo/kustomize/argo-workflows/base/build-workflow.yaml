@@ -34,7 +34,8 @@ spec:
             arguments:
               parameters:
                 - name: package
-                  value: "{{tasks.build.outputs.parameters.package}}"
+                  value: "{{item}}"
+            withParam: "{{tasks.git-difference.outputs.parameters.packages}}"
             dependencies:
               - build
           - name: promote
@@ -42,11 +43,12 @@ spec:
             arguments:
               parameters:
                 - name: package
-                  value: "{{tasks.test.outputs.parameters.package}}"
+                  value: "{{item}}"
                 - name: repo_owner
                   value: "luca-iachini"
                 - name: repo_name
                   value: "argocd-test"
+              withParam: "{{tasks.git-difference.outputs.parameters.packages}}"
             dependencies:
               - test
     - name: git-difference
@@ -128,9 +130,9 @@ spec:
           git add .
           git commit -m "Upgraded {{inputs.parameters.package}} image tag"
           git push
-      volumeMounts:
-      - name: github-access
-        mountPath: /.github/
+        volumeMounts:
+        - name: github-access
+          mountPath: /.github/
       volumes:
         - name: github-access
           secret:
