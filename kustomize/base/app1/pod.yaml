@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   containers:
-  - image: app1:latest
+  - image: alpine:latest
     command:
       - /bin/sh
       - "-c"

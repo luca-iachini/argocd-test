@@ -3,8 +3,3 @@ kind: Kustomization
 
 resources:
 - pod.yaml
-
-images:
-- name: app1
-  newName: alpine
-  newTag: "3.4"
