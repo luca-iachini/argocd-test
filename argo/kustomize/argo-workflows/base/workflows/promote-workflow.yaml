@@ -26,9 +26,7 @@ spec:
           for package in $packages
           do
             if [ ! -z "$package" ]; then
-              cd kustomize/base/$package
-              kustomize edit set image $package=$package:{{inputs.parameters.version}}
-              git add .
+              $(cd kustomize/base/$package && kustomize edit set image $package=$package:{{inputs.parameters.version}} && git add .)
             fi
           done
           git commit -m "Upgrade applications to {{inputs.parameters.version}}"
