@@ -25,8 +25,8 @@ spec:
           packages=$(echo "{{inputs.parameters.packages}}" | jq -r '.[]')
           for package in $packages
           do
-            cd kustomize/base/{{inputs.parameters.package}}
-            kustomize edit set image {{inputs.parameters.package}}={{inputs.parameters.package}}:{{inputs.parameters.version}}
+            cd kustomize/base/$package
+            kustomize edit set image $package=$package:{{inputs.parameters.version}}
             git add .
           done
           git commit -m "Upgrade applications to {{inputs.parameters.version}}"
