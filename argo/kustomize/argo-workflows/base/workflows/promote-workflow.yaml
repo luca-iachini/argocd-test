@@ -22,12 +22,14 @@ spec:
           cd {{inputs.parameters.repo_name}}
           git config user.name "$(cat /.github/user)"
           git config user.email "$(cat /.github/email)"
-          packages=$(echo "{{inputs.parameters.packages}}" | jq -r '.[]')
+          packages=$(echo "{{inputs.parameters.packages}}" | sed 's/[][",]/ /g' | sed 's/  */ /g | sed 's/ /\n/g')
           for package in $packages
           do
-            cd kustomize/base/$package
-            kustomize edit set image $package=$package:{{inputs.parameters.version}}
-            git add .
+            if [ ! -z "$package" ]; then
+              cd kustomize/base/$package
+              kustomize edit set image $package=$package:{{inputs.parameters.version}}
+              git add .
+            fi
           done
           git commit -m "Upgrade applications to {{inputs.parameters.version}}"
           git push
