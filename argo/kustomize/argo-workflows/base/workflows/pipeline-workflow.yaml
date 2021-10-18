@@ -27,7 +27,6 @@ spec:
                 - name: repo_name
                   value: "argocd-test"
           - name: test
-            parallelism: 2
             templateRef:
               name: test
               template: test
@@ -40,7 +39,6 @@ spec:
             dependencies:
               - git-difference
           - name: build
-            parallelism: 2
             templateRef:
               name: build
               template: build
@@ -68,4 +66,4 @@ spec:
                 - name: version
                   value: "{{workflow.parameters.version}}"
             dependencies:
-              - test
+              - build
