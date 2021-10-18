@@ -3,3 +3,7 @@ kind: Kustomization
 
 resources:
 - pod.yaml
+images:
+- name: app1
+  newName: app1
+  newTag: "3.6"
