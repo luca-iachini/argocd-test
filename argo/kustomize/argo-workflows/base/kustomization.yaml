@@ -8,6 +8,7 @@ resources:
   - rbac.yaml
   - ingress.yaml
   - workflows/pipeline-workflow.yaml
+  - workflows/git-difference-workflow.yaml
   - workflows/build-workflow.yaml
   - workflows/test-workflow.yaml
   - workflows/promote-workflow.yaml
