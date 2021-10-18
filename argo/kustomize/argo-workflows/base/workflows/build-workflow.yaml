@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: build
+spec:
+  serviceAccountName: workflow
+  templates:
+    - name: build
+      inputs:
+        parameters:
+          - name: package
+            value: "test"
+      outputs:
+        parameters:
+          - name: package
+            value: "{{input.parameters.package}}"
+      script:
+        image: alpine:latest
+        command: [sh]
+        source: |
+          echo "building package {{inputs.parameters.package}}"
