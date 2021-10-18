@@ -12,6 +12,11 @@ spec:
   triggers:
     - template:
         name: webhook-workflow-trigger
+        parameters:
+          - src:
+              dependencyName: webhook-push-dep
+              dataKey: body.version
+            dest: spec.arguments.parameters.0.value
         argoWorkflow:
           group: argoproj.io
           version: v1alpha1
@@ -25,8 +30,12 @@ spec:
                 generateName: push-trigger-
                 namespace: argo
               spec:
+                arguments:
+                  parameters:
+                    - name: version
+                      value: "3.6"
                 entrypoint: pipeline
                 serviceAccountName: workflow
                 workflowTemplateRef:
-                  name: build-pipeline
+                  name: pipeline
                   clusterScope: true
