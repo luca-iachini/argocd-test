@@ -7,11 +7,11 @@ resources:
   - github.com/argoproj/argo-workflows/manifests/cluster-install/argo-server-rbac
   - rbac.yaml
   - ingress.yaml
-  - workflows/pipeline-workflow.yaml
-  - workflows/git-difference-workflow.yaml
-  - workflows/build-workflow.yaml
-  - workflows/test-workflow.yaml
-  - workflows/promote-workflow.yaml
+  - workflows/pipeline.yaml
+  - workflows/git-difference.yaml
+  - workflows/build.yaml
+  - workflows/test.yaml
+  - workflows/promote.yaml
 patchesStrategicMerge:
   - config.yaml
   - server-deployment.yaml

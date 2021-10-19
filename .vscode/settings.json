@@ -18,6 +18,6 @@
     "peacock.color": "#69d7e6",
     "yaml.validate": true,
     "yaml.schemas": {
-        "https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json": ["*-workflow.yaml"],
+        "https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json": ["workflows/*.yaml"],
     }
 }

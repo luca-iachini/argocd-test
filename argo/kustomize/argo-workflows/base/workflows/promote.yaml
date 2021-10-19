@@ -16,8 +16,8 @@ spec:
         image: smartive/kustomize:latest
         command: [sh]
         source: |
-          echo "promoting package {{inputs.parameters.packages}}"
           set -e
+          echo "promoting package {{inputs.parameters.packages}}"
           git clone https://$(cat /.github/token)@github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}
           cd {{inputs.parameters.repo_name}}
           git config user.name "$(cat /.github/user)"
