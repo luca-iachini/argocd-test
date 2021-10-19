@@ -7,5 +7,6 @@ resources:
   - github.com/argoproj/argo-cd/manifests/cluster-rbac/
   - ingress.yaml
 patchesStrategicMerge:
-  - configmap.yaml
+  - argocd-cm.yaml
+  - argocd-cmd-params-cm.yaml
 namespace: argocd

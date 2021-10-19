@@ -4,9 +4,3 @@ kind: Kustomization
 resources:
 - app1.yaml
 - app2.yaml
-
-images:
-- name: app1
-  newTag: "3.4"
-- name: app2
-  newTag: "3.4"
