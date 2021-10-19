@@ -44,4 +44,4 @@ data:
   | kubectl apply -f -
 
 # install application
-kubectl apply -f argo/applications/apps.yaml
+kubectl apply -f applications/apps.yaml
