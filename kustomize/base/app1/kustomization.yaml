@@ -6,4 +6,4 @@ resources:
 images:
 - name: app1
   newName: app1
-  newTag: "3.6"
+  newTag: 1.0.1
