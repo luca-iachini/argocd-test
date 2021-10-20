@@ -10,7 +10,6 @@ spec:
   arguments:
     parameters:
       - name: version
-        value: 0.0.1
   templates:
     - name: pipeline
       steps:

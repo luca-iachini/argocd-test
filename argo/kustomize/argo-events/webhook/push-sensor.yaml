@@ -33,7 +33,6 @@ spec:
                 arguments:
                   parameters:
                     - name: version
-                      value: "3.6"
                 entrypoint: pipeline
                 serviceAccountName: workflow
                 workflowTemplateRef:
