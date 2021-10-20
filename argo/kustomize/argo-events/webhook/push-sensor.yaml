@@ -12,12 +12,12 @@ spec:
   triggers:
     - template:
         name: webhook-workflow-trigger
-        parameters:
+        argoWorkflow:
+          parameters:
           - src:
               dependencyName: webhook-push-dep
               dataKey: body.version
             dest: spec.arguments.parameters.0.value
-        argoWorkflow:
           group: argoproj.io
           version: v1alpha1
           resource: workflows
