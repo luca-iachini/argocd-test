@@ -57,3 +57,18 @@ kubectl create secret generic argocd-image-updater-secret \
 | kubectl -n argocd apply -f -
 
 kubectl -n argocd rollout restart deployment argocd-image-updater
+
+
+## install Minio artifacts repository
+
+helm repo add minio https://helm.min.io/
+
+helm update
+
+helm install argo-artifacts minio/minio --set fullnameOverride=argo-artifacts --set resources.requests.memory=200Mi --namespace argocd
+
+kubectl port-forward  -n argocd svc/argo-artifacts 9000:9000
+
+kubectl get secret argo-artifacts -o jsonpath='{.data.accesskey}' -n argocd | base64 --decode | pbcopy
+
+kubectl get secret argo-artifacts -o jsonpath='{.data.secretkey}' -n argocd | base64 --decode | pbcopy

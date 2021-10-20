@@ -7,6 +7,7 @@ resources:
   - github.com/argoproj/argo-workflows/manifests/cluster-install/argo-server-rbac
   - rbac.yaml
   - ingress.yaml
+  - artifacts-cm.yaml
   - workflows/pipeline.yaml
   - workflows/git-clone.yaml
   - workflows/build.yaml
