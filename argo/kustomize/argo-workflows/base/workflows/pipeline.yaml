@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  generateName: webhook-
   name: pipeline
+  generateName: webhook-
 spec:
   entrypoint: pipeline
   serviceAccountName: workflow
@@ -10,22 +10,19 @@ spec:
   arguments:
     parameters:
       - name: version
+        value: 1.0.0
+      - name: repo_owner
+        value: test
+      - name: repo_name
+        value: test
   templates:
     - name: pipeline
       steps:
-        - - name: git-difference
+        - - name: git-clone
             templateRef:
-              name: git-difference
-              template: git-difference
+              name: git-clone
+              template: git-clone
               clusterScope: true
-            arguments:
-              parameters:
-                - name: message
-                  value: "{}"
-                - name: repo_owner
-                  value: "luca-iachini"
-                - name: repo_name
-                  value: "argocd-test"
         - - name: test
             templateRef:
               name: test
@@ -35,7 +32,7 @@ spec:
               parameters:
                 - name: package
                   value: "{{item}}"
-            withParam: "{{steps.git-difference.outputs.parameters.packages}}"
+            withParam: "{{steps.git-clone.outputs.parameters.packages}}"
         - - name: build
             templateRef:
               name: build
@@ -45,7 +42,7 @@ spec:
               parameters:
                 - name: package
                   value: "{{item}}"
-            withParam: "{{steps.git-difference.outputs.parameters.packages}}"
+            withParam: "{{steps.git-clone.outputs.parameters.packages}}"
         - - name: promote
             templateRef:
               name: promote
@@ -53,11 +50,10 @@ spec:
               clusterScope: true
             arguments:
               parameters:
-                - name: packages
-                  value: "{{steps.git-difference.outputs.parameters.packages}}"
-                - name: repo_owner
-                  value: "luca-iachini"
-                - name: repo_name
-                  value: "argocd-test"
                 - name: version
                   value: "{{workflow.parameters.version}}"
+                - name: packages
+                  value: "{{steps.git-clone.outputs.parameters.packages}}"
+              artifacts:
+                - name: "git-source"
+                  from: "{{steps.git-clone.outputs.artifacts.git-source}}"

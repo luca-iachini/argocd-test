@@ -1,22 +1,31 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ClusterWorkflowTemplate
 metadata:
-  name: git-difference
+  name: git-clone
 spec:
   serviceAccountName: workflow
   templates:
-    - name: git-difference
+    - name: git-clone
       inputs:
         parameters:
-          - name: message
           - name: repo_owner
           - name: repo_name
+        artifacts:
+        - name: git-source
+          path: /mnt/src
+          git:
+            repo: https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
+            usernameSecret:
+              name: github-access
+              key: user
+            passwordSecret:
+              name: github-access
+              key: token
       script:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
+        workingDir: /mnt/src
         source: |
-          git clone https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
-          cd {{inputs.parameters.repo_name}}
           packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
           json=""
           for package in $packages
@@ -32,6 +41,9 @@ spec:
         - name: packages
           valueFrom:
             path: /mnt/out/packages
+        artifacts:
+          - name: git-source
+            path: /mnt/src
       volumes:
         - name: out
           emptyDir: { }

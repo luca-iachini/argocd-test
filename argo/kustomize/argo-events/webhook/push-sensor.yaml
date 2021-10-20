@@ -33,6 +33,10 @@ spec:
                 arguments:
                   parameters:
                     - name: version
+                    - name: repo_owner
+                      value: luca-iachini
+                    - name: repo_name
+                      value: argocd-test
                 entrypoint: pipeline
                 serviceAccountName: workflow
                 workflowTemplateRef:
