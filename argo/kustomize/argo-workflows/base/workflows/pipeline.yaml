@@ -23,6 +23,12 @@ spec:
               name: git-clone
               template: git-clone
               clusterScope: true
+            arguments:
+              parameters:
+                - name: "repo_owner"
+                  value: "{{workflow.parameters.repo_owner}}"
+                - name: "repo_name"
+                  value: "{{workflow.parameters.repo_name}}"
         - - name: test
             templateRef:
               name: test
