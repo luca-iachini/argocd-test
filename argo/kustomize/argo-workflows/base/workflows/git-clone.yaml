@@ -27,6 +27,8 @@ spec:
         workingDir: /mnt/out/src
         source: |
           packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
+          ls -la
+          echo $packages
           json=""
           for package in $packages
           do
