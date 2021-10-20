@@ -12,7 +12,7 @@ spec:
           - name: repo_name
         artifacts:
         - name: git-source
-          path: /mnt/src
+          path: /mnt/out/src
           git:
             repo: https://github.com/{{inputs.parameters.repo_owner}}/{{inputs.parameters.repo_name}}.git
             usernameSecret:
@@ -24,7 +24,7 @@ spec:
       script:
         image: makocchi/alpine-git-curl-jq:latest
         command: [sh]
-        workingDir: /mnt/src
+        workingDir: /mnt/out/src
         source: |
           packages=$(git log --format= -n 1 --name-only | sed -nE 's/^go\/(.*)\/.*$/\1/p' | sort | uniq)
           json=""
@@ -43,7 +43,7 @@ spec:
             path: /mnt/out/packages
         artifacts:
           - name: git-source
-            path: /mnt/src
+            path: /mnt/out/src
       volumes:
         - name: out
           emptyDir: { }
