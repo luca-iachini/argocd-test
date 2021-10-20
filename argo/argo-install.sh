@@ -11,7 +11,7 @@ kustomize build  kustomize/argo-cd/base | kubectl apply --filename -
 
 export PASS=$(kubectl --namespace argocd get secret argocd-initial-admin-secret --output jsonpath="{.data.password}" | base64 --decode)
 
-argocd login --insecure --username admin --password $PASS --grpc-web  kubernetes.docker.internal
+argocd login --insecure --username admin --password $PASS --grpc-web  kubernetes.docker.internal --grpc-web-root-path /argocd
 
 kubectl apply -f projects/project.yaml
 
@@ -45,3 +45,15 @@ data:
 
 # install application
 kubectl apply -f applications/apps.yaml
+
+
+### https://argocd-image-updater.readthedocs.io/en/stable/install/start/
+# image updater
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+IMAGE_UPDATER_TOKEN=$(argocd account generate-token --account image-updater --id image-updater)
+
+kubectl create secret generic argocd-image-updater-secret \
+--from-literal argocd.token=$IMAGE_UPDATER_TOKEN --dry-run=client -o yaml \
+| kubectl -n argocd apply -f -
+
+kubectl -n argocd rollout restart deployment argocd-image-updater

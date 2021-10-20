@@ -3,6 +3,10 @@ kind: Application
 metadata:
   name: app2
   namespace: argocd
+  argocd-image-updater.argoproj.io/write-back-method: argocd
+  argocd-image-updater.argoproj.io/app2.update-strategy: latest
+  argocd-image-updater.argoproj.io/image-list: app2=app2
+  argocd-image-updater.argoproj.io/app2.force-update: "true"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
