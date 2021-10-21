@@ -72,3 +72,15 @@ kubectl port-forward  -n argo svc/argo-artifacts 9000:9000
 kubectl get secret argo-artifacts -o jsonpath='{.data.accesskey}' -n argo | base64 --decode | pbcopy
 
 kubectl get secret argo-artifacts -o jsonpath='{.data.secretkey}' -n argo | base64 --decode | pbcopy
+
+
+## sops operator https://github.com/isindir/sops-secrets-operator
+kubectl create namespace sops
+
+### gpg secrets creations. Read sops/gpg/README.md
+kubectl apply -f sops/gpg/1.yaml --namespace sops
+kubectl apply -f sops/gpg/2.yaml --namespace sops
+
+helm upgrade --install sops sops/chart/sops-operator/ \
+  --namespace sops --set gpg.enabled=true
+

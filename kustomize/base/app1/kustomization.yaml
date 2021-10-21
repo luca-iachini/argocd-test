@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - pod.yaml
+- secrets.enc.yaml
 images:
 - name: app1
   newName: app1
