@@ -2,10 +2,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: app1
-  namespace: default
+  namespace: test
 spec:
   containers:
   - image: app1:latest
+    env:
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: app1-secret
+            key: db-password
     command:
       - /bin/sh
       - "-c"

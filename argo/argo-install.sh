@@ -84,3 +84,14 @@ kubectl apply -f sops/gpg/2.yaml --namespace sops
 helm upgrade --install sops sops/chart/sops-operator/ \
   --namespace sops --set gpg.enabled=true
 
+# encrypt
+sops --encrypt \
+  --pgp $FP \
+  --encrypted-suffix='Templates' secrets.yaml \
+> secrets.enc.yaml
+
+# decrypt
+sops --decrypt \
+  --pgp $FP \
+  --encrypted-suffix='Templates' secrets.enc.yaml \
+> secrets.yaml
